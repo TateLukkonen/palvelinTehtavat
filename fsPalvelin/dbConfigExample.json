@@ -1,0 +1,7 @@
+{
+  "host": "localhost",
+  "user": "root",
+  "password": "salasana",
+  "databse": "feedback_support",
+  "port": "port"
+}
