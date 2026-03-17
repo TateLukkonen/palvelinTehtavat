@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/pub/style.css">
+  </head>
+  <body>
+    <div class="links"><a href="/asiakkaat">Aiakkaat</a><a href="/tukipyynnot">Tukipyynnot</a><b>Palautteet</b></div>
+       <table>
+    <tr><th>Asiakas</th><th>Saapunut</th><th>Vieraan nimi</th><th>Vieraan email</th><th>Palaute</th><th>Käsittely</th></tr>
+    <% for (const row of rows) { %>
+        <tr>
+            <td><%= row.fullname %></td>
+            <td><%= row.arrived %></td>
+            <td><%= row.guest_name %></td>
+            <td><%= row.guest_email %></td>
+            <td><%= row.feedback %></td>
+            <td><%= row.handled %></td>
+</tr>
+    <% } %>
+    </table></body>
+</html>

@@ -21,32 +21,34 @@ const __dirname = path.dirname(__filename)
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"))
 
-app.use("/inc", express.static("includes"))
+app.use("/pub", express.static("public"));
 
-app.get("/feedback", async(req, res) => {
-    let connection;
-    try {
-        connection = await mysql.createConnection({
-            host: dbHost,
-            user: dbUser,
-            password: dbPwd,
-            database: dbName
-        });
+app.get("/asiakkaat", async (req, res) => {
+  try {
+    const rows = await db.getUsers();
+    res.render("asiakkaat", { rows: rows });
+  } catch (error) {
+    res.status(500).send("Database error");
+  }
+});
 
-        const rows = await db.getFeedback();
+app.get("/tukipyynnot", async (req, res) => {
+  try {
+    const rows = await db.getTicket();
+    res.render("tukipyynnot", { rows: rows });
+  } catch (error) {
+    res.status(500).send("Database error");
+  }
+});
 
-        res.render("feedback", { rows: rows });
-    } catch (error) {
-        console.error("database error." + error);
-        res.status(500).send("Internal server error");
-    }
-    if (connection) {
-        try {
-            await connection.end();
-        } catch (closeError) {
-            console.error("Error closing connection:" + closeError)
-        }
-    }
-})
+app.get("/palautteet", async (req, res) => {
+  try {
+    const rows = await db.getPalautteet();
+    res.render("palautteet", { rows: rows });
+  } catch (error) {
+    res.status(500).send("Database error");
+  }
+});
+
 
 app.listen(port, host, console.log(`${host}:${port} kuuntelee...`));

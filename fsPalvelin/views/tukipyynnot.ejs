@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/pub/style.css">
+  </head>
+  <body>
+    <div class="links"><a href="/asiakkaat">Aiakkaat</a><b>Tukipyynnot</b><a href="/palautteet">Palautteet</a></div>
+       <table>
+    <tr><th>Status</th><th>Id</th><th>Saapunut</th><th>Asiakas</th><th>Kuvaus</th><th>Käsittely</th></tr>
+    <% for (const row of rows) { %>
+        <tr>
+            <td><%= row.status == 1 ? "Open" : row.status == 2 ? "Working on" : row.status == 3 ? "Done" : row.status == 4 ? "closed" : "Unknown" %></td>
+            <td><%= row.id %></td>
+            <td><%= row.arrived %></td>
+            <td><%= row.name %></td>
+            <td><%= row.description %></td>
+            <td><%= row.handled %></td>
+</tr>
+    <% } %>
+    </table></body>
+</html>

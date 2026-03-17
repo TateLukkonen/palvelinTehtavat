@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/pub/style.css">
+  </head>
+  <body> 
+    <div class="links"><b>Asiakkaat</b><a href="/tukipyynnot">Tukipyynnot</a><a href="/palautteet">Palautteet</a></div>
+      <table>
+    <tr><th>Asiakas</th><th>id</th><th>koko nimi</th><th>email</th><th>admin</th></tr>
+    <% for (const row of rows) { %>
+        <tr>
+          <td><%= row.name %></td>
+          <td><%= row.id %></td>
+          <td><%= row.fullname %></td>
+          <td><%= row.email %></td>
+          <td><%= row.admin ? "Kyllä" : "ei" %></td>
+</tr>
+    <% } %>
+    </table></body>
+</html>
