@@ -3,6 +3,13 @@
     flex-direction: row;
     justify-content: space-between;
     padding-bottom: 20px;
+    background-color: greenyellow;
+}
+
+#tukPaTitle {
+    display: flex;
+    justify-content: center;
+    background-color: green;
 }
 
 table {
@@ -25,4 +32,10 @@ th, td {
 
 a {
     text-decoration: none;
+}
+
+#row1, #row2, #row3, #commentRows {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
 }

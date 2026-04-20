@@ -3,10 +3,8 @@ import mysql from "mysql2/promise";
 import db from "./db.js";
 import path from "path";
 import { fileURLToPath } from "url";
-
 const port = 3000;
 const host = "localhost";
-
 
 const dbHost = "localhost";
 const dbName = "feedback_support";
@@ -16,12 +14,13 @@ const dbPwd = "";
 const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename)
+const __dirname = path.dirname(__filename);
 
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"))
+app.set("views", path.join(__dirname, "views"));
 
 app.use("/pub", express.static("public"));
+app.use(express.urlencoded({ extended: true }));
 
 app.get("/asiakkaat", async (req, res) => {
   try {
@@ -50,5 +49,36 @@ app.get("/palautteet", async (req, res) => {
   }
 });
 
+app.get("/tukiPalautteet/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const items = await db.getTukiPalautteet(id);
+
+    res.render("tukiPalautteet", { items });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error.message);
+  }
+});
+
+app.post("/add-message", async (req, res) => {
+  const { ticket_id, body } = req.body;
+
+  const from_user = 14; //vaihdan myöhemmin
+
+  const user = await db.getUserById(from_user);
+
+  if (!user) {
+    return res.status(403).send("User not found");
+  }
+  if (user.admin !== 1) {
+    return res.status(403).send("Only admins can send messages");
+  }
+
+  await db.addMessage(ticket_id, from_user, body);
+
+  res.redirect(req.get("Referrer") || "/");
+});
 
 app.listen(port, host, console.log(`${host}:${port} kuuntelee...`));

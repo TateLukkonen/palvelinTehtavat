@@ -68,9 +68,75 @@ const getPalautteet = async () => {
   }
 };
 
+const getTukiPalautteet = async (id) => {
+  try {
+    const connection = await getConnection();
+    const sql = `SELECT
+        support_ticket.id,
+        customer.name,
+        ticket_status.description as ticket_description,
+        support_ticket.arrived,
+        support_ticket.handled,
+        support_ticket.description,
+        support_message.body,
+        support_message.created_at,
+        system_user.fullname as user_message_name
+        FROM support_ticket
+        LEFT JOIN customer on support_ticket.customer_id = customer.id
+        LEFT JOIN support_message on support_ticket.id = support_message.ticket_id
+        LEFT JOIN ticket_status on support_ticket.status = ticket_status.id
+        LEFT JOIN system_user on support_message.from_user = system_user.id
+        WHERE support_ticket.id = ?`;
+    const [rows] = await connection.execute(sql, [id]);
+
+    connection.release();
+
+    return rows;
+  } catch (error) {
+    console.error("Error getting tuki palaute by id", error);
+    throw error;
+  }
+};
+
+const addMessage = async (ticket_id, from_user, body) => {
+  try {
+    const connection = await getConnection();
+
+    const sql =
+      "INSERT INTO support_message (ticket_id, from_user, body) VALUES (?, ?, ?)";
+
+    const [result] = await connection.execute(sql, [
+      ticket_id,
+      from_user,
+      body,
+    ]);
+
+    connection.release();
+
+    return result;
+  } catch (error) {
+    console.error("Error adding message", error);
+    throw error;
+  }
+};
+
+const getUserById = async (id) => {
+  const connection = await getConnection();
+
+  const sql = "SELECT * FROM system_user WHERE id = ?";
+  const [rows] = await connection.execute(sql, [id]);
+
+  connection.release();
+
+  return rows[0];
+};
+
 export default {
   getFeedback,
   getUsers,
   getTicket,
   getPalautteet,
+  getTukiPalautteet,
+  addMessage,
+  getUserById,
 };

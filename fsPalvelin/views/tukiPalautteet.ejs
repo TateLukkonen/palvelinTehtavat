@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/pub/style.css">
+  </head>
+  <body> 
+    <div id="tukPaTitle"><h1>Tuki- ja Palautteet</h1></div>
+    <div class="links"><a>Asiakkaat</a><a href="/tukipyynnot">Tukipyynnot</a><a href="/palautteet">Palautteet</a></div>
+    <% if (items[0]) { %>
+      <div id="info">
+        <div id="row1">
+          <h5 class="row1">ID: <%= items[0].id %></h5>
+          <h5 class="row1"><%= items[0].name %></h5>
+        </div>
+        <div id="row2">
+          <h5 class="status">Tila:</h5>
+          <h5 class="status"><%= items[0].ticket_description %></h5>
+          <h5 class="status handled"><%= items[0].arrived %></h5>
+          <h5 class="status handled">Käsitelty: "<%= items[0].handled %>"</h5>
+        </div>
+        <div id="row3">
+          <h5 class="desc">Kuvaus:</h5>
+          <h5 class="desc"><%= items[0].description %></h5>
+        </div>
+      </div>
+      <% items.forEach(item => { %>
+        <div id="commentRows">
+          <h5 class="comments"><%= item.created_at %></h5>
+          <h5 class="comments"><%= item.user_message_name %></h5>
+          <h5 class="comments"><%= item.body %></h5>
+        </div>
+        <% }) %>
+      <form action="/add-message" method="POST">
+        <input type="text" name="body" placeholder="" required>
+        <button type="submit">Lähetä</button>
+        <input type="hidden" name="ticket_id" value="<%= items[0].id %>">
+      </form>
+    <% } else { %>
+      <p>Not found</p>
+    <% } %>
+  </body>
+</html>
