@@ -75,6 +75,7 @@ const getTukiPalautteet = async (id) => {
         support_ticket.id,
         customer.name,
         ticket_status.description as ticket_description,
+        ticket_status.id as ticket_status_id,
         support_ticket.arrived,
         support_ticket.handled,
         support_ticket.description,
@@ -131,6 +132,21 @@ const getUserById = async (id) => {
   return rows[0];
 };
 
+const updateTicketStatus = async (id, status) => {
+  try {
+    const connection = await getConnection();
+
+    const sql = "UPDATE support_ticket SET status = ? WHERE id = ?";
+    const [result] = await connection.execute(sql, [status, id]);
+
+    connection.release();
+    return result;
+  } catch (error) {
+    console.error("Error updating ticket status", error);
+    throw error;
+  }
+};
+
 export default {
   getFeedback,
   getUsers,
@@ -139,4 +155,5 @@ export default {
   getTukiPalautteet,
   addMessage,
   getUserById,
+  updateTicketStatus,
 };

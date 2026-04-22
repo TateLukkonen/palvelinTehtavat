@@ -8,7 +8,7 @@
   </head>
   <body> 
     <div id="tukPaTitle"><h1>Tuki- ja Palautteet</h1></div>
-    <div class="links"><a>Asiakkaat</a><a href="/tukipyynnot">Tukipyynnot</a><a href="/palautteet">Palautteet</a></div>
+    <div class="links"><a href="/asiakkaat">Asiakkaat</a><a href="/tukipyynnot">Tukipyynnot</a><a href="/palautteet">Palautteet</a></div>
     <% if (items[0]) { %>
       <div id="info">
         <div id="row1">
@@ -17,7 +17,16 @@
         </div>
         <div id="row2">
           <h5 class="status">Tila:</h5>
-          <h5 class="status"><%= items[0].ticket_description %></h5>
+          <form method="POST" action="/update-status">
+            <input type="hidden" name="ticketId" value="<%= items[0].id %>">
+            <select name="change_status" class="status">
+              <option value="1" <%= items[0].ticket_status_id === 1 ? "selected" : "" %>>open</option>
+              <option value="2" <%= items[0].ticket_status_id === 2 ? "selected" : "" %>>working on</option>
+              <option value="3" <%= items[0].ticket_status_id === 3 ? "selected" : "" %>>done</option>
+              <option value="4" <%= items[0].ticket_status_id === 4 ? "selected" : "" %>>closed</option>
+            </select>
+            <button type="submit">Tallenna</button>
+          </form>
           <h5 class="status handled"><%= items[0].arrived %></h5>
           <h5 class="status handled">Käsitelty: "<%= items[0].handled %>"</h5>
         </div>

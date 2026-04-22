@@ -55,6 +55,16 @@ app.get("/tukiPalautteet/:id", async (req, res) => {
 
     const items = await db.getTukiPalautteet(id);
 
+    const from_user = 14;
+    const user = await db.getUserById(from_user);
+
+    if (!user) {
+      return res.status(403).send("User not found");
+    }
+    if (user.admin !== 1) {
+      return res.status(403).send("Only admins can enter");
+    }
+
     res.render("tukiPalautteet", { items });
   } catch (error) {
     console.error(error);
@@ -79,6 +89,20 @@ app.post("/add-message", async (req, res) => {
   await db.addMessage(ticket_id, from_user, body);
 
   res.redirect(req.get("Referrer") || "/");
+});
+
+app.post("/update-status", async (req, res) => {
+  try {
+    const newStatus = req.body.change_status;
+    const ticketId = req.body.ticketId;
+
+    await db.updateTicketStatus(ticketId, newStatus);
+
+    res.redirect(`/tukiPalautteet/${ticketId}`);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
 });
 
 app.listen(port, host, console.log(`${host}:${port} kuuntelee...`));
