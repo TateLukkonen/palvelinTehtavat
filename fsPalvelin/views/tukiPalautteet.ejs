@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="/pub/style.css">
   </head>
   <body> 
+    <form action="/logout" method="POST">
+      <button type="submit">Logout</button>
+    </form>
     <div id="tukPaTitle"><h1>Tuki- ja Palautteet</h1></div>
     <div class="links"><a href="/asiakkaat">Asiakkaat</a><a href="/tukipyynnot">Tukipyynnot</a><a href="/palautteet">Palautteet</a></div>
     <% if (items[0]) { %>

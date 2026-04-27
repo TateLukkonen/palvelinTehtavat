@@ -147,6 +147,21 @@ const updateTicketStatus = async (id, status) => {
   }
 };
 
+const getUserByLogin = async (login) => {
+  const connection = await getConnection();
+
+  const sql = `
+    SELECT id, fullname, email, admin, password
+    FROM system_user
+    WHERE email = ? OR id = ?
+  `;
+
+  const [rows] = await connection.execute(sql, [login, login]);
+
+  connection.release();
+  return rows[0];
+};
+
 export default {
   getFeedback,
   getUsers,
@@ -156,4 +171,5 @@ export default {
   addMessage,
   getUserById,
   updateTicketStatus,
+  getUserByLogin,
 };

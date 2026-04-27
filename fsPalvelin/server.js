@@ -5,6 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 const port = 3000;
 const host = "localhost";
+import session from "express-session";
 
 const dbHost = "localhost";
 const dbName = "feedback_support";
@@ -22,7 +23,27 @@ app.set("views", path.join(__dirname, "views"));
 app.use("/pub", express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/asiakkaat", async (req, res) => {
+app.use(
+  session({
+    secret: "secret-key",
+    resave: false,
+    saveUninitialized: false,
+  }),
+);
+
+const isAdmin = (req, res, next) => {
+  if (!req.session.user) {
+    return res.status(403).send("Not logged in");
+  }
+
+  if (req.session.user.admin !== 1) {
+    return res.status(403).send("Only admins can enter");
+  }
+
+  next();
+};
+
+app.get("/asiakkaat", isAdmin, async (req, res) => {
   try {
     const rows = await db.getUsers();
     res.render("asiakkaat", { rows: rows });
@@ -31,7 +52,7 @@ app.get("/asiakkaat", async (req, res) => {
   }
 });
 
-app.get("/tukipyynnot", async (req, res) => {
+app.get("/tukipyynnot", isAdmin, async (req, res) => {
   try {
     const rows = await db.getTicket();
     res.render("tukipyynnot", { rows: rows });
@@ -40,7 +61,7 @@ app.get("/tukipyynnot", async (req, res) => {
   }
 });
 
-app.get("/palautteet", async (req, res) => {
+app.get("/palautteet", isAdmin, async (req, res) => {
   try {
     const rows = await db.getPalautteet();
     res.render("palautteet", { rows: rows });
@@ -49,13 +70,13 @@ app.get("/palautteet", async (req, res) => {
   }
 });
 
-app.get("/tukiPalautteet/:id", async (req, res) => {
+app.get("/tukiPalautteet/:id", isAdmin, async (req, res) => {
   try {
     const id = req.params.id;
 
     const items = await db.getTukiPalautteet(id);
 
-    const from_user = 14;
+    const from_user = req.session.user.id;
     const user = await db.getUserById(from_user);
 
     if (!user) {
@@ -72,10 +93,40 @@ app.get("/tukiPalautteet/:id", async (req, res) => {
   }
 });
 
+app.get("/", (req, res) => {
+  res.render("login", { error: null });
+});
+
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await db.getUserByLogin(email);
+
+  if (!user) {
+    return res.render("login", { error: "Käyttäjää ei löydy" });
+  }
+
+  if (user.admin !== 1) {
+    return res.render("login", { error: "Vain adminit voivat kirjautua" });
+  }
+
+  if (!user.password || password !== user.password) {
+    return res.render("login", { error: "Väärä salasana" });
+  }
+
+  req.session.user = {
+    id: user.id,
+    name: user.fullname,
+    admin: user.admin,
+  };
+
+  res.redirect("/asiakkaat");
+});
+
 app.post("/add-message", async (req, res) => {
   const { ticket_id, body } = req.body;
 
-  const from_user = 14; //vaihdan myöhemmin
+  const from_user = req.session.user.id;
 
   const user = await db.getUserById(from_user);
 
@@ -103,6 +154,17 @@ app.post("/update-status", async (req, res) => {
     console.error(err);
     res.sendStatus(500);
   }
+});
+
+app.post("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Logout failed");
+    }
+
+    res.redirect("/");
+  });
 });
 
 app.listen(port, host, console.log(`${host}:${port} kuuntelee...`));
