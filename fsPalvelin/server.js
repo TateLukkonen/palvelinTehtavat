@@ -108,7 +108,7 @@ app.post("/login", async (req, res) => {
 
   if (user.admin !== 1) {
     return res.render("login", { error: "Vain adminit voivat kirjautua" });
-  }
+  }   
 
   if (!user.password || password !== user.password) {
     return res.render("login", { error: "Väärä salasana" });
