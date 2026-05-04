@@ -162,6 +162,17 @@ const getUserByLogin = async (login) => {
   return rows[0];
 };
 
+const setTicketHandledNow = async (id) => {
+  const connection = await getConnection();
+  try {
+    const sql = "UPDATE support_ticket SET handled = NOW() WHERE id = ?";
+    const [result] = await connection.execute(sql, [id]);
+    return result;
+  } finally {
+    connection.release();
+  }
+};
+
 export default {
   getFeedback,
   getUsers,
@@ -172,4 +183,5 @@ export default {
   getUserById,
   updateTicketStatus,
   getUserByLogin,
+  setTicketHandledNow,
 };

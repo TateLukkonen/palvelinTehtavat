@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 const port = 3000;
 const host = "localhost";
 import session from "express-session";
+import bcrypt from "bcrypt";
 
 const dbHost = "localhost";
 const dbName = "feedback_support";
@@ -108,9 +109,11 @@ app.post("/login", async (req, res) => {
 
   if (user.admin !== 1) {
     return res.render("login", { error: "Vain adminit voivat kirjautua" });
-  }   
+  }
 
-  if (!user.password || password !== user.password) {
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if (!isMatch) {
     return res.render("login", { error: "Väärä salasana" });
   }
 
@@ -148,6 +151,9 @@ app.post("/update-status", async (req, res) => {
     const ticketId = req.body.ticketId;
 
     await db.updateTicketStatus(ticketId, newStatus);
+    if (Number(newStatus) === 4) {
+      await db.setTicketHandledNow(ticketId);
+    }
 
     res.redirect(`/tukiPalautteet/${ticketId}`);
   } catch (err) {
@@ -155,6 +161,7 @@ app.post("/update-status", async (req, res) => {
     res.sendStatus(500);
   }
 });
+
 
 app.post("/logout", (req, res) => {
   req.session.destroy((err) => {
