@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/pub/style.css">
 </head>
 <body>
-    <h1 class="pokedexTitle">Pokedex</h1>
+    <%- include("osasivut/header") %>
     <form class="pokemonButtons" action="/pokemonSelected" method="post">
         <% pokemons.forEach(pokemon => { %>
             <button class="pokemonButton" name="pokemonSelect" value="<%= pokemon.name %>">
@@ -15,5 +15,6 @@
             </button>
         <% }) %>
     </form>
+    <%- include("osasivut/footer") %>
 </body>
 </html>

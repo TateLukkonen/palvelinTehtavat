@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/pub/style.css">
 </head>
 <body>
-    <h1 class="pokedexTitle">Pokedex</h1>
+    <%- include("osasivut/header") %>
     <div id="pokemonGeneral">
         <div id="pokemonView">
             <h1><%= pokemon.name %></h1>
@@ -32,5 +32,6 @@
             </div>
         </div>
     </div>
+    <%- include("osasivut/footer") %>
 </body>
 </html>

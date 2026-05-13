@@ -10,6 +10,14 @@ app.get("/", (req, res) => {
   res.render("pokeApi")
 })
 
+app.get("/", (req, res) => {
+  res.render("header");
+});
+
+app.get("/", (req, res) => {
+  res.render("footer");
+});
+
 app.get("/gen/:id", async (req, res) => {
   try {
     const gen = req.params.id

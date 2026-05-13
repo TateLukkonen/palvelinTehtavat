@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/pub/style.css">
 </head>
 <body>
-    <h1 class="pokedexTitle">Pokedex</h1>
+    <%- include("osasivut/header") %>
     <h1 class="textCenter">Generations</h1>
     <form class="genButtons" action="/genSelected" method="post">
         <button class="genButton" name="genSelect" value="1">I</button>
@@ -20,5 +20,6 @@
         <button class="genButton" name="genSelect" value="8">VIII</button>
         <button class="genButton" name="genSelect" value="9">IX</button>
     </form>
+    <%- include("osasivut/footer") %>
 </body>
 </html>
