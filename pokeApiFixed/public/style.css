@@ -82,3 +82,18 @@
     gap: 20px;
 
 }
+
+.actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.actionButton {
+    padding: 10px;
+    background-color: rgb(237, 237, 237);
+    height: 40px;
+    width: 60px;
+    border-radius: 10px;
+}

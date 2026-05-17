@@ -9,6 +9,17 @@
 <body>
     <header>
         <h1 class="pokedexTitle">Pokedex</h1>
+        <div class="actions">
+            <form action="/goHome" method="POST">
+                <input class="actionButton" type="submit" value="Home">
+            </form>
+            <form action="/searchPokemon" method="POST">
+                <div class="searchArea">
+                    <input type="text" name="pokemonSearch">
+                    <input class="actionButton" type="submit" value="search">
+                </div>
+            </form>
+        </div>
     </header>
 </body>
 </html>
